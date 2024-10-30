@@ -1,0 +1,23 @@
+<!-- templates/voucher_redeemed.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Voucher Redeemed</title>
+</head>
+<body>
+    <h1>Voucher Redeemed Successfully</h1>
+    <p>Thank you! The voucher has been successfully redeemed.</p>
+    <ul>
+        <li><strong>Voucher Code:</strong> {{ voucher.code }}</li>
+        <li><strong>Amount:</strong> ${{ voucher.amount }}</li>
+        {% if voucher.product %}
+            <li><strong>Product:</strong> {{ voucher.product }}</li>
+        {% endif %}
+        <li><strong>Redeemed At:</strong> {{ voucher.redeemed_at }}</li>
+    </ul>
+    <h3>QR Code</h3>
+    <img src="{{ voucher.qr_code_url }}" alt="QR Code for Voucher">
+    <a href="{% url 'redeem_voucher' %}">Redeem another voucher</a>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!-- templates/create_voucher.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Voucher</title>
+</head>
+<body>
+    <h1>Create Voucher</h1>
+
+    <!-- Wyświetlamy komunikat błędu, jeśli istnieje -->
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Voucher</button>
+    </form>
+</body>
+</html>

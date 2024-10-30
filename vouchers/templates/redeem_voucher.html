@@ -9,8 +9,8 @@
     <p class="error-message">{{ message }}</p>
 {% endif %}
 
-<!-- Kontener QR z wyraźnym rozmiarem i odstępem -->
-<div id="qr-reader" style="width: 100%; max-width: 300px; height: 300px; background: #ddd; margin-bottom: 20px;"></div>
+<!-- Kontener QR z kwadratowymi proporcjami i obcinaniem obrazu -->
+<div id="qr-reader" style="width: 100%; max-width: 300px; height: 300px; overflow: hidden; background: #ddd; margin-bottom: 20px;"></div>
 
 <form method="post" id="redeem-form">
     {% csrf_token %}
@@ -42,7 +42,8 @@
                 backCamera.id,
                 {
                     fps: 10,
-                    qrbox: { width: 250, height: 250 }
+                    qrbox: { width: 250, height: 250 }, // Ustawienie kwadratowego obszaru skanowania
+                    aspectRatio: 1 // Ustawienie proporcji obrazu na 1:1 (kwadratowe)
                 },
                 onScanSuccess,
                 onScanFailure

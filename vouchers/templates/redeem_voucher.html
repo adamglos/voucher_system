@@ -1,10 +1,9 @@
-<!-- templates/redeem_voucher.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Redeem Voucher</title>
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
     <h1>Redeem Voucher</h1>
@@ -22,15 +21,9 @@
     </form>
 
     <script>
-        let formSubmitted = false;  // Flaga do sprawdzenia, czy formularz już został przesłany
-
         function onScanSuccess(decodedText, decodedResult) {
-            // Sprawdzamy, czy formularz już został przesłany
-            if (!formSubmitted) {
-                formSubmitted = true;  // Ustawiamy flagę, aby zapobiec ponownemu przesłaniu formularza
-                document.querySelector('input[name="code"]').value = decodedText;
-                document.getElementById('redeem-form').submit();
-            }
+            document.querySelector('input[name="code"]').value = decodedText;
+            document.getElementById('redeem-form').submit();
         }
 
         function onScanFailure(error) {

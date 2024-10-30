@@ -9,13 +9,27 @@
     <p class="error-message">{{ message }}</p>
 {% endif %}
 
-<!-- Kontener QR z kwadratowymi proporcjami i obcinaniem obrazu -->
+<!-- Kontener QR -->
 <div id="qr-reader" style="width: 100%; max-width: 300px; height: 300px; overflow: hidden; background: #ddd; margin-bottom: 20px;"></div>
 
 <form method="post" id="redeem-form">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="button">Redeem</button>
+    <input type="hidden" name="confirm_redeem" value="true" />
+
+    {% if voucher %}
+        <!-- Szczegóły vouchera wyświetlane po zeskanowaniu -->
+        <h2>Voucher Details</h2>
+        <ul>
+            <li><strong>Voucher Code:</strong> {{ voucher.code }}</li>
+            <li><strong>Amount:</strong> {{ voucher.amount }} PLN</li>
+            {% if voucher.product %}
+                <li><strong>Product:</strong> {{ voucher.product }}</li>
+            {% endif %}
+            <li><strong>Valid:</strong> {{ voucher.redeemed_at|date:"Y-m-d H:i" }}</li>
+        </ul>
+        <button type="submit" class="button">Zatwierdź realizację</button>
+    {% endif %}
 </form>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
@@ -42,8 +56,8 @@
                 backCamera.id,
                 {
                     fps: 10,
-                    qrbox: { width: 250, height: 250 }, // Ustawienie kwadratowego obszaru skanowania
-                    aspectRatio: 1 // Ustawienie proporcji obrazu na 1:1 (kwadratowe)
+                    qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1
                 },
                 onScanSuccess,
                 onScanFailure

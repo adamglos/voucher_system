@@ -32,28 +32,33 @@ def create_voucher(request):
 
     return render(request, 'create_voucher.html', {'form': form, 'error_message': error_message})
 
+
 def redeem_voucher(request):
-    message = None  # Przechowujemy komunikat błędu, jeśli voucher nie zostanie znaleziony lub jest już zrealizowany
+    message = None
+    voucher = None
 
     if request.method == 'POST':
         form = RedeemVoucherForm(request.POST)
         if form.is_valid():
             code = form.cleaned_data['code']
+
             try:
-                # Pobieramy voucher, który nie został jeszcze wykorzystany
+                # Pobieramy szczegóły vouchera bez oznaczania go jako zrealizowany
                 voucher = Voucher.objects.get(code=code, is_redeemed=False)
-                # Oznaczamy voucher jako zrealizowany
-                voucher.is_redeemed = True
-                voucher.redeemed_at = timezone.now()
-                voucher.save()
-                return render(request, 'voucher_redeemed.html', {'voucher': voucher})
+
+                # Sprawdzamy, czy użytkownik kliknął przycisk "Zatwierdź realizację"
+                if 'confirm_redeem' in request.POST:
+                    voucher.is_redeemed = True
+                    voucher.redeemed_at = timezone.now()
+                    voucher.save()
+                    return render(request, 'voucher_redeemed.html', {'voucher': voucher})
+
             except Voucher.DoesNotExist:
-                # Ustawiamy komunikat błędu, jeśli voucher nie istnieje lub jest już zrealizowany
                 message = "Voucher o podanym kodzie nie istnieje lub został już wykorzystany."
     else:
         form = RedeemVoucherForm()
 
-    return render(request, 'redeem_voucher.html', {'form': form, 'message': message})
+    return render(request, 'redeem_voucher.html', {'form': form, 'voucher': voucher, 'message': message})
 
 def voucher_created(request):
     return render(request, 'voucher_created.html')

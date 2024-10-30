@@ -6,6 +6,5 @@ class VoucherForm(forms.ModelForm):
         model = Voucher
         fields = ['amount', 'product']
 
-
 class RedeemVoucherForm(forms.Form):
     code = forms.CharField(max_length=12, label="Voucher Code")

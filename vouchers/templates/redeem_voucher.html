@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Redeem Voucher</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script> <!-- CDN do biblioteki QR -->
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script> <!-- CDN do biblioteki QR -->
 </head>
 <body>
     <h1>Redeem Voucher</h1>
@@ -31,14 +31,30 @@
         }
 
         function onScanFailure(error) {
-            // Możesz dodać obsługę błędów skanowania, jeśli chcesz
             console.warn(`QR error = ${error}`);
         }
 
-        // Inicjalizacja skanera QR
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", { fps: 10, qrbox: { width: 250, height: 250 } });
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        // Użycie tylnej kamery (kamera "environment")
+        Html5Qrcode.getCameras().then(devices => {
+            const backCamera = devices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('environment'));
+
+            if (backCamera) {
+                const html5QrcodeScanner = new Html5Qrcode("qr-reader");
+                html5QrcodeScanner.start(
+                    backCamera.id, // Używamy identyfikatora tylnej kamery
+                    {
+                        fps: 10, // Liczba klatek na sekundę
+                        qrbox: { width: 250, height: 250 } // Obszar skanowania
+                    },
+                    onScanSuccess,
+                    onScanFailure
+                );
+            } else {
+                console.error("No back camera found.");
+            }
+        }).catch(err => {
+            console.error("Error in fetching cameras: ", err);
+        });
     </script>
 </body>
 </html>

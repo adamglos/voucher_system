@@ -4,29 +4,99 @@
     <meta charset="UTF-8">
     <title>Redeem Voucher</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        /* Resetowanie marginesów i stylów */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Kontener na pełny ekran */
+        body, html {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f9;
+        }
+
+        /* Kontener dla skanera i formularza */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Styl skanera QR */
+        #qr-reader {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            background: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Styl formularza */
+        form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Styl przycisku */
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Styl komunikatu o błędzie */
+        .error-message {
+            color: red;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Redeem Voucher</h1>
+    <div class="container">
+        {% if message %}
+            <p class="error-message">{{ message }}</p>
+        {% endif %}
 
-    {% if message %}
-        <p style="color: red;">{{ message }}</p>
-    {% endif %}
+        <div id="qr-reader"></div>
 
-    <div id="qr-reader" style="width: 300px; margin-bottom: 20px;"></div>
-
-    <form method="post" id="redeem-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Redeem</button>
-    </form>
+        <form method="post" id="redeem-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Redeem</button>
+        </form>
+    </div>
 
     <script>
-        let formSubmitted = false;  // Flaga do sprawdzenia, czy formularz już został przesłany
+        let formSubmitted = false;
 
         function onScanSuccess(decodedText, decodedResult) {
-            // Jeśli formularz nie został jeszcze przesłany, wykonaj submit
             if (!formSubmitted) {
-                formSubmitted = true;  // Ustawiamy flagę na true, aby zapobiec kolejnym wysyłkom
+                formSubmitted = true;
                 document.querySelector('input[name="code"]').value = decodedText;
                 document.getElementById('redeem-form').submit();
             }

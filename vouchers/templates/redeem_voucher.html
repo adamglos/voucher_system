@@ -21,9 +21,15 @@
     </form>
 
     <script>
+        let formSubmitted = false;  // Flaga do sprawdzenia, czy formularz już został przesłany
+
         function onScanSuccess(decodedText, decodedResult) {
-            document.querySelector('input[name="code"]').value = decodedText;
-            document.getElementById('redeem-form').submit();
+            // Jeśli formularz nie został jeszcze przesłany, wykonaj submit
+            if (!formSubmitted) {
+                formSubmitted = true;  // Ustawiamy flagę na true, aby zapobiec kolejnym wysyłkom
+                document.querySelector('input[name="code"]').value = decodedText;
+                document.getElementById('redeem-form').submit();
+            }
         }
 
         function onScanFailure(error) {

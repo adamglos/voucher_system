@@ -1,60 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Redeem Voucher</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-</head>
-<body>
-    <h1>Redeem Voucher</h1>
+{% extends 'base.html' %}
 
-    {% if message %}
-        <p style="color: red;">{{ message }}</p>
-    {% endif %}
+{% block title %}Redeem Voucher{% endblock %}
 
-    <div id="qr-reader" style="width: 300px; height: 300px; background: #ddd;"></div>
+{% block content %}
+<h1>Redeem Voucher</h1>
 
-    <form method="post" id="redeem-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Redeem</button>
-    </form>
+{% if message %}
+    <p class="error-message">{{ message }}</p>
+{% endif %}
 
-    <script>
-        let formSubmitted = false;
+<!-- Kontener QR bez dodatkowego formatowania -->
+<div id="qr-reader" style="width: 300px; height: 300px; background: #ddd;"></div>
 
-        function onScanSuccess(decodedText, decodedResult) {
-            if (!formSubmitted) {
-                formSubmitted = true;
-                document.querySelector('input[name="code"]').value = decodedText;
-                document.getElementById('redeem-form').submit();
-            }
+<form method="post" id="redeem-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="button">Redeem</button>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<script>
+    let formSubmitted = false;
+
+    function onScanSuccess(decodedText, decodedResult) {
+        if (!formSubmitted) {
+            formSubmitted = true;
+            document.querySelector('input[name="code"]').value = decodedText;
+            document.getElementById('redeem-form').submit();
         }
+    }
 
-        function onScanFailure(error) {
-            console.warn(`QR error = ${error}`);
+    function onScanFailure(error) {
+        console.warn(`QR error = ${error}`);
+    }
+
+    Html5Qrcode.getCameras().then(devices => {
+        const backCamera = devices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('environment'));
+        if (backCamera) {
+            const html5QrcodeScanner = new Html5Qrcode("qr-reader");
+            html5QrcodeScanner.start(
+                backCamera.id,
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 }
+                },
+                onScanSuccess,
+                onScanFailure
+            );
+        } else {
+            console.error("No back camera found.");
         }
-
-        Html5Qrcode.getCameras().then(devices => {
-            const backCamera = devices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('environment'));
-            if (backCamera) {
-                const html5QrcodeScanner = new Html5Qrcode("qr-reader");
-                html5QrcodeScanner.start(
-                    backCamera.id,
-                    {
-                        fps: 10,
-                        qrbox: { width: 250, height: 250 }
-                    },
-                    onScanSuccess,
-                    onScanFailure
-                );
-            } else {
-                console.error("No back camera found.");
-            }
-        }).catch(err => {
-            console.error("Error fetching cameras: ", err);
-        });
-    </script>
-</body>
-</html>
+    }).catch(err => {
+        console.error("Error fetching cameras: ", err);
+    });
+</script>
+{% endblock %}

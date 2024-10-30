@@ -56,3 +56,11 @@ def redeem_voucher(request):
 
 def voucher_created(request):
     return render(request, 'voucher_created.html')
+
+def recently_redeemed_vouchers(request):
+    # Pobieramy 5 najnowszych wykorzystanych voucherów
+    redeemed_vouchers = Voucher.objects.filter(is_redeemed=True).order_by('-redeemed_at')[:5]
+    return render(request, 'recently_redeemed_vouchers.html', {'redeemed_vouchers': redeemed_vouchers})
+
+def home(request):
+    return render(request, 'home.html')

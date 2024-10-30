@@ -9,23 +9,24 @@ def generate_voucher_code(length=8):
     letters_and_digits = string.ascii_uppercase + string.digits
     return ''.join(random.choice(letters_and_digits) for _ in range(length))
 
-# vouchers/views.py
+
 def create_voucher(request):
-    error_message = None  # Przechowujemy ewentualny komunikat o błędzie
+    error_message = None
 
     if request.method == 'POST':
         form = VoucherForm(request.POST)
         if form.is_valid():
-            voucher = form.save(commit=False)
-            voucher.code = generate_voucher_code()
-            voucher.save()
-            qr_path = voucher.generate_qr_code()  # Generujemy kod QR
+            quantity = form.cleaned_data['quantity']
+            amount = form.cleaned_data['amount']
+            product = form.cleaned_data['product']
 
-            if qr_path is None:
-                # Ustawiamy komunikat błędu, jeśli zapis kodu QR się nie powiódł
-                error_message = "Wystąpił problem przy generowaniu kodu QR."
+            # Generowanie wielu voucherów
+            for _ in range(quantity):
+                voucher = Voucher(amount=amount, product=product, code=generate_voucher_code())
+                voucher.save()
+                voucher.generate_qr_code()
 
-            return redirect('voucher_created')
+            return redirect('voucher_created')  # Przekierowanie do potwierdzenia po utworzeniu
     else:
         form = VoucherForm()
 

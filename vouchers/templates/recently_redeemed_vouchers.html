@@ -1,91 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Recently Redeemed Vouchers</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+{% extends 'base.html' %}
 
-        body, html {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f4f4f9;
-        }
+{% block title %}Recently Redeemed Vouchers{% endblock %}
 
-        .container {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
+{% block content %}
+<h1>Recently Redeemed Vouchers</h1>
 
-        h1 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .voucher-list {
-            width: 100%;
-            list-style: none;
-            padding: 0;
-        }
-
-        .voucher-item {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .voucher-item:last-child {
-            border-bottom: none;
-        }
-
-        .voucher-details {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .date {
-            font-size: 14px;
-            color: #666;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Recently Redeemed Vouchers</h1>
-
-        <ul class="voucher-list">
-            {% for voucher in redeemed_vouchers %}
-                <li class="voucher-item">
-                    <div class="voucher-details">
-                        <span><strong>Code:</strong> {{ voucher.code }}</span>
-                        <span><strong>Amount:</strong> {{ voucher.amount }} PLN</span>
-                    </div>
-                    <div class="date">{{ voucher.redeemed_at|date:"Y-m-d H:i" }}</div>
-                </li>
-            {% empty %}
-                <li>No recently redeemed vouchers found.</li>
-            {% endfor %}
-        </ul>
-    </div>
-</body>
-</html>
+<ul class="voucher-list">
+    {% for voucher in redeemed_vouchers %}
+        <li class="voucher-item">
+            <div class="voucher-details">
+                <span><strong>Code:</strong> {{ voucher.code }}</span>
+                <span><strong>Amount:</strong> {{ voucher.amount }} PLN</span>
+            </div>
+            <div class="date">{{ voucher.redeemed_at|date:"Y-m-d H:i" }}</div>
+        </li>
+    {% empty %}
+        <li>No recently redeemed vouchers found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,23 +1,23 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}Redeem Voucher{% endblock %}
 
 {% block content %}
-    <h1>Redeem Voucher</h1>
+<h1>Redeem Voucher</h1>
 
-    {% if message %}
-        <p class="error-message">{{ message }}</p>
-    {% endif %}
+{% if message %}
+    <p class="error-message">{{ message }}</p>
+{% endif %}
 
-    <div id="qr-reader" style="width: 100%; max-width: 400px; height: 300px; background: #ddd;"></div>
+<div id="qr-reader" style="width: 100%; height: auto; background: #ddd;"></div>
 
-    <form method="post" id="redeem-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="button">Redeem</button>
-    </form>
-{% endblock %}
+<form method="post" id="redeem-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="button">Redeem</button>
+</form>
 
+<!-- Skrypt QR -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script>
     let formSubmitted = false;
@@ -31,12 +31,11 @@
     }
 
     function onScanFailure(error) {
-        console.warn(`QR error = ${error}`);
+        console.warn(`Błąd skanowania QR = ${error}`);
     }
 
     Html5Qrcode.getCameras().then(devices => {
         const backCamera = devices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('environment'));
-
         if (backCamera) {
             const html5QrcodeScanner = new Html5Qrcode("qr-reader");
             html5QrcodeScanner.start(
@@ -49,9 +48,10 @@
                 onScanFailure
             );
         } else {
-            console.error("No back camera found.");
+            console.error("Nie znaleziono kamery tylnej.");
         }
     }).catch(err => {
-        console.error("Error in fetching cameras: ", err);
+        console.error("Błąd przy pobieraniu kamer:", err);
     });
 </script>
+{% endblock %}

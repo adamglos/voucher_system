@@ -1,5 +1,5 @@
 from django.utils import timezone
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import VoucherForm, RedeemVoucherForm
 from .models import Voucher
 import random
@@ -8,7 +8,6 @@ import string
 def generate_voucher_code(length=8):
     letters_and_digits = string.ascii_uppercase + string.digits
     return ''.join(random.choice(letters_and_digits) for _ in range(length))
-
 
 def create_voucher(request):
     error_message = None
@@ -33,32 +32,26 @@ def create_voucher(request):
     return render(request, 'create_voucher.html', {'form': form, 'error_message': error_message})
 
 
-def redeem_voucher(request):
+def show_voucher(request):
     message = None
-    voucher = None
 
     if request.method == 'POST':
         form = RedeemVoucherForm(request.POST)
         if form.is_valid():
             code = form.cleaned_data['code']
-
             try:
-                # Pobieramy szczegóły vouchera bez oznaczania go jako zrealizowany
+                # Sprawdzenie, czy voucher istnieje i nie jest zrealizowany
                 voucher = Voucher.objects.get(code=code, is_redeemed=False)
 
-                # Sprawdzamy, czy użytkownik kliknął przycisk "Zatwierdź realizację"
-                if 'confirm_redeem' in request.POST:
-                    voucher.is_redeemed = True
-                    voucher.redeemed_at = timezone.now()
-                    voucher.save()
-                    return render(request, 'voucher_redeemed.html', {'voucher': voucher})
+                # Przekierowanie do widoku szczegółów vouchera
+                return redirect('voucher_details', code=code)
 
             except Voucher.DoesNotExist:
                 message = "Voucher o podanym kodzie nie istnieje lub został już wykorzystany."
     else:
         form = RedeemVoucherForm()
 
-    return render(request, 'redeem_voucher.html', {'form': form, 'voucher': voucher, 'message': message})
+    return render(request, 'show_voucher.html', {'form': form, 'message': message})
 
 def voucher_created(request):
     return render(request, 'voucher_created.html')
@@ -70,3 +63,20 @@ def recently_redeemed_vouchers(request):
 
 def home(request):
     return render(request, 'home.html')
+
+def voucher_details(request, code):
+    # Pobieramy voucher na podstawie kodu, bez jego realizacji
+    voucher = get_object_or_404(Voucher, code=code, is_redeemed=False)
+    return render(request, 'voucher_details.html', {'voucher': voucher})
+
+
+def redeem_voucher(request, code):
+    # Pobranie vouchera na podstawie kodu
+    voucher = get_object_or_404(Voucher, code=code, is_redeemed=False)
+
+    # Oznaczamy voucher jako zrealizowany
+    voucher.is_redeemed = True
+    voucher.redeemed_at = timezone.now()
+    voucher.save()
+
+    return render(request, 'voucher_redeemed.html', {'voucher': voucher})

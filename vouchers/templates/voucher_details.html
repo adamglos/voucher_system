@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Voucher Details{% endblock %}
+
+{% block content %}
+<h1>Voucher Details</h1>
+
+<ul class="voucher-details">
+    <li><strong>Voucher Code:</strong> {{ voucher.code }}</li>
+    <li><strong>Amount:</strong> {{ voucher.amount }} PLN</li>
+    {% if voucher.product %}
+        <li><strong>Product:</strong> {{ voucher.product }}</li>
+    {% endif %}
+    <li><strong>Created At:</strong> {{ voucher.created_at|date:"Y-m-d H:i" }}</li>
+</ul>
+
+<!-- Przyciski akcji -->
+<div style="margin-top: 20px;">
+    <a href="{% url 'show_voucher' %}" class="button">Back to Show Voucher</a>
+    <a href="{% url 'redeem_voucher' code=voucher.code %}" class="button" style="background-color: #f44336;">Redeem</a> <!-- Przycisk do realizacji -->
+</div>
+{% endblock %}

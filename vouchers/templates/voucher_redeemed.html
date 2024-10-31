@@ -4,9 +4,9 @@
 
 {% block content %}
 <h1>Voucher Redeemed</h1>
-<p>Thank you! Your voucher has been successfully redeemed.</p>
 
-<ul class="voucher-details">
+<p>The following voucher has been successfully redeemed:</p>
+<ul>
     <li><strong>Voucher Code:</strong> {{ voucher.code }}</li>
     <li><strong>Amount:</strong> {{ voucher.amount }} PLN</li>
     {% if voucher.product %}
@@ -14,4 +14,6 @@
     {% endif %}
     <li><strong>Redeemed At:</strong> {{ voucher.redeemed_at|date:"Y-m-d H:i" }}</li>
 </ul>
+
+<a href="{% url 'home' %}" class="button">Return to Home</a>
 {% endblock %}

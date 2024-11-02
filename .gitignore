@@ -1,7 +1,6 @@
 # Django
 *.pyc
 __pycache__/
-static/
 db.sqlite3
 
 # Virtual Environment
@@ -10,3 +9,6 @@ db.sqlite3
 # Configuration files
 .env
 .idea
+
+static/
+media/qr_codes

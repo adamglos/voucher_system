@@ -5,7 +5,13 @@
 {% block content %}
 <h1>Voucher Management</h1>
 
-<a href="{% url 'create_voucher' %}" class="button">Create Voucher</a>
-<a href="{% url 'show_voucher' %}" class="button">Show Voucher</a>
-<a href="{% url 'recently_redeemed_vouchers' %}" class="button">Recently Redeemed</a>
+{% if user.is_authenticated %}
+    {% if is_manager %}
+        <a href="{% url 'create_voucher' %}" class="button">Create Voucher</a>
+    {% endif %}
+    <a href="{% url 'show_voucher' %}" class="button">Show Voucher</a>
+    <a href="{% url 'recently_redeemed_vouchers' %}" class="button">Recently Redeemed</a>
+{% else %}
+    <p>Please log in to access voucher management features.</p>
+{% endif %}
 {% endblock %}

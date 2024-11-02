@@ -1,6 +1,7 @@
 # Django
 *.pyc
 __pycache__/
+static/
 db.sqlite3
 
 # Virtual Environment

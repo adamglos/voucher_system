@@ -124,7 +124,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'my_app/static'),  # Upewnij się, że ścieżka jest poprawna
+    os.path.join(BASE_DIR, '/vouchers/static'),
 ]
 
 # Default primary key field type

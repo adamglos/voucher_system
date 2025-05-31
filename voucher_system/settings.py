@@ -27,8 +27,9 @@ SECRET_KEY = 'django-insecure-1eukh2pqn(bjl0_a5$ia1gq9c1jtxxw4$se()0qyue5^-bv&3g
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'localhost',
     '127.0.0.1',
-    'adamglos.pythonanywhere.com',
+    'voucher.thefry.pl',
 ]
 
 

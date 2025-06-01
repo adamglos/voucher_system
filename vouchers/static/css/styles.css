@@ -52,3 +52,8 @@ h1 {
     color: red;
     font-weight: bold;
 }
+
+#qr-reader {
+    width: 100%;
+    height: 400px;  /* przykładowa wysokość */
+}

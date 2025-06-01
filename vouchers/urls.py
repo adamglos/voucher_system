@@ -1,6 +1,5 @@
 # vouchers/urls.py
 from django.urls import path
-from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
@@ -12,5 +11,4 @@ urlpatterns = [
     path('details/<str:code>/', views.voucher_details, name='voucher_details'),
     path('redeem/<str:code>/', views.redeem_voucher, name='redeem_voucher'),
     path('login/', views.custom_login, name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]

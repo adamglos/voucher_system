@@ -3,6 +3,7 @@ import qrcode
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.contrib.auth import get_user_model
 import os
 
 
@@ -13,11 +14,7 @@ class Voucher(models.Model):
     is_redeemed = models.BooleanField(default=False)
     redeemed_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def redeem(self):
-        self.is_redeemed = True
-        self.redeemed_at = timezone.now()
-        self.save()
+    redeemed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='redeemed_vouchers')
 
     def generate_qr_code(self):
         try:
@@ -37,6 +34,12 @@ class Voucher(models.Model):
 
     def qr_code_url(self):
         return f'{settings.MEDIA_URL}qr_codes/{self.code}.png'
+
+    def redeem(self, user=None):
+        self.is_redeemed = True
+        self.redeemed_at = timezone.now()
+        self.redeemed_by = user
+        self.save()
 
     def __str__(self):
         return f'Voucher {self.code}'

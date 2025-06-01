@@ -20,11 +20,44 @@
 <script>
     let formSubmitted = false;
 
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
     function onScanSuccess(decodedText, decodedResult) {
         if (!formSubmitted) {
             formSubmitted = true;
-            document.querySelector('input[name="code"]').value = decodedText;
-            document.getElementById('show-form').submit();
+
+            const csrftoken = getCookie('csrftoken');
+            const form = document.getElementById('show-form');
+            const action = form.getAttribute('action') || window.location.pathname;
+
+            // Tworzymy obiekt XMLHttpRequest i wysyłamy POST z CSRF
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", action, true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+
+            const formData = `code=${encodeURIComponent(decodedText)}`;
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    window.location.href = xhr.responseURL;  // przekieruj po sukcesie
+                } else {
+                    console.error("Redeem failed:", xhr.responseText);
+                }
+            };
+            xhr.send(formData);
         }
     }
 

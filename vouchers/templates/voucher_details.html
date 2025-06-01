@@ -10,6 +10,9 @@
     <li><strong>Amount:</strong> {{ voucher.amount }} PLN</li>
     {% if voucher.product %}
         <li><strong>Product:</strong> {{ voucher.product }}</li>
+            {% if voucher.redeemed_by %}
+            <p>Zrealizowany przez: {{ voucher.redeemed_by.username }}</p>
+            {% endif %}
     {% endif %}
     <li><strong>Created At:</strong> {{ voucher.created_at|date:"Y-m-d H:i" }}</li>
 </ul>

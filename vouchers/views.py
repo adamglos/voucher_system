@@ -73,6 +73,7 @@ def recently_redeemed_vouchers(request):
     redeemed_vouchers = Voucher.objects.filter(is_redeemed=True).order_by('-redeemed_at')[:5]
     return render(request, 'recently_redeemed_vouchers.html', {'redeemed_vouchers': redeemed_vouchers})
 
+@login_required
 def home(request):
     is_manager = request.user.groups.filter(name='Managers').exists()
 
@@ -81,6 +82,7 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
+@login_required
 def voucher_details(request, code):
     # Pobieramy voucher na podstawie kodu, bez jego realizacji
     voucher = get_object_or_404(Voucher, code=code, is_redeemed=False)
@@ -94,6 +96,7 @@ def redeem_voucher(request, code):
     # Oznaczamy voucher jako zrealizowany
     voucher.is_redeemed = True
     voucher.redeemed_at = timezone.now()
+    voucher.redeemed_by = request.user
     voucher.save()
 
     return render(request, 'voucher_redeemed.html', {'voucher': voucher})

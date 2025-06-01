@@ -5,9 +5,16 @@ from .models import Voucher
 
 @admin.register(Voucher)
 class VoucherAdmin(admin.ModelAdmin):
-    list_display = ('code', 'amount', 'product', 'is_redeemed', 'created_at', 'redeemed_at', 'qr_code_preview')
-    list_filter = ('is_redeemed', 'created_at')
-    search_fields = ('code', 'product')
+    list_display = ('code', 'amount', 'product', 'is_redeemed', 'created_at', 'redeemed_at', 'redeemed_by_username', 'qr_code_preview')
+    list_filter = ('is_redeemed', 'created_at', 'redeemed_by')
+    search_fields = ('code', 'product', 'redeemed_by__username')
+
+    def redeemed_by_username(self, obj):
+        if obj.redeemed_by:
+            return obj.redeemed_by.username
+        return '-'
+
+    redeemed_by_username.short_description = 'Zrealizowany przez'
 
     def qr_code_preview(self, obj):
         if obj.qr_code_url():

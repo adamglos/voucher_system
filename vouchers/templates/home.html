@@ -11,7 +11,13 @@
             <a href="{% url 'create_voucher' %}" class="button">Utwórz Voucher</a>
         {% endif %}
         <a href="{% url 'show_voucher' %}" class="button">Wyszukaj Voucher</a>
-        <a href="{% url 'recently_redeemed_vouchers' %}" class="button">Ostatnio Zrealizowane</a>
+        <a href="{% url 'recently_redeemed_vouchers' %}" class="button">
+            {% if is_shop %}
+                Moje Zrealizowane Vouchery
+            {% else %}
+                Ostatnio Zrealizowane
+            {% endif %}
+        </a>
     </div>
 {% else %}
     <p>Zaloguj się, aby uzyskać dostęp do funkcji zarządzania voucherami.</p>

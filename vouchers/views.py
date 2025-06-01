@@ -13,6 +13,9 @@ from .forms import CustomAuthenticationForm
 def is_manager(user):
     return user.groups.filter(name='Managers').exists()
 
+def is_shop(user):
+    return user.groups.filter(name='Shops').exists()
+
 def generate_voucher_code(length=8):
     letters_and_digits = string.ascii_uppercase + string.digits
     return ''.join(random.choice(letters_and_digits) for _ in range(length))
@@ -70,16 +73,38 @@ def voucher_created(request):
 
 @login_required
 def recently_redeemed_vouchers(request):
-    # Pobieramy 5 najnowszych wykorzystanych voucherów
-    redeemed_vouchers = Voucher.objects.filter(is_redeemed=True).order_by('-redeemed_at')[:5]
-    return render(request, 'recently_redeemed_vouchers.html', {'redeemed_vouchers': redeemed_vouchers})
+    # Sprawdzamy, do jakiej grupy należy użytkownik
+    is_manager_user = is_manager(request.user)
+    is_shop_user = is_shop(request.user)
+
+    # Filtrujemy vouchery w zależności od grupy użytkownika
+    if is_manager_user:
+        # Dla managerów pokazujemy wszystkie
+        redeemed_vouchers = Voucher.objects.filter(is_redeemed=True).order_by('-redeemed_at')[:10]
+    elif is_shop_user:
+        # Dla sklepów pokazujemy tylko ich vouchery
+        redeemed_vouchers = Voucher.objects.filter(
+            is_redeemed=True, 
+            redeemed_by=request.user
+        ).order_by('-redeemed_at')[:10]
+    else:
+        # Dla innych użytkowników pusta lista (opcjonalnie)
+        redeemed_vouchers = Voucher.objects.none()
+
+    return render(request, 'recently_redeemed_vouchers.html', {
+        'redeemed_vouchers': redeemed_vouchers,
+        'is_manager': is_manager_user,
+        'is_shop': is_shop_user
+    })
 
 @login_required
 def home(request):
-    is_manager = request.user.groups.filter(name='Managers').exists()
+    is_manager_user = is_manager(request.user)
+    is_shop_user = is_shop(request.user)
 
     context = {
-        'is_manager': is_manager,
+        'is_manager': is_manager_user,
+        'is_shop': is_shop_user
     }
     return render(request, 'home.html', context)
 

@@ -5,12 +5,24 @@
 {% block content %}
 <h1>Ostatnio Zrealizowane Vouchery</h1>
 
+{% if is_shop %}
+    <div class="info-message">
+        <p>Wyświetlane są tylko vouchery zrealizowane przez Ciebie.</p>
+    </div>
+{% endif %}
+
 <ul class="voucher-list">
     {% for voucher in redeemed_vouchers %}
         <li class="voucher-item">
             <div class="voucher-details">
                 <span><strong>Kod:</strong> {{ voucher.code }}</span>
                 <span><strong>Kwota:</strong> {{ voucher.amount }} PLN</span>
+                {% if is_manager %}
+                    <span><strong>Zrealizowany przez:</strong> {{ voucher.redeemed_by.username }}</span>
+                {% endif %}
+                {% if voucher.product %}
+                    <span><strong>Produkt:</strong> {{ voucher.product }}</span>
+                {% endif %}
             </div>
             <div class="date">{{ voucher.redeemed_at|date:"Y-m-d H:i" }}</div>
         </li>

@@ -1,19 +1,21 @@
 {% extends 'base.html' %}
 
-{% block title %}Voucher Redeemed{% endblock %}
+{% block title %}Voucher Zrealizowany{% endblock %}
 
 {% block content %}
-<h1>Voucher Redeemed</h1>
+<h1>Voucher Zrealizowany</h1>
 
-<p>The following voucher has been successfully redeemed:</p>
+<p>Następujący voucher został pomyślnie zrealizowany:</p>
 <ul>
-    <li><strong>Voucher Code:</strong> {{ voucher.code }}</li>
-    <li><strong>Amount:</strong> {{ voucher.amount }} PLN</li>
+    <li><strong>Kod Vouchera:</strong> {{ voucher.code }}</li>
+    <li><strong>Kwota:</strong> {{ voucher.amount }} PLN</li>
     {% if voucher.product %}
-        <li><strong>Product:</strong> {{ voucher.product }}</li>
+        <li><strong>Produkt:</strong> {{ voucher.product }}</li>
     {% endif %}
-    <li><strong>Redeemed At:</strong> {{ voucher.redeemed_at|date:"Y-m-d H:i" }}</li>
+    <li><strong>Zrealizowano:</strong> {{ voucher.redeemed_at|date:"Y-m-d H:i" }}</li>
 </ul>
 
-<a href="{% url 'home' %}" class="button">Return to Home</a>
+<div class="button-group">
+    <a href="{% url 'home' %}" class="button">Powrót do strony głównej</a>
+</div>
 {% endblock %}

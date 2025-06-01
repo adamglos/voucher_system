@@ -19,6 +19,6 @@ class VoucherAdmin(admin.ModelAdmin):
     def qr_code_preview(self, obj):
         if obj.qr_code_url():
             return format_html('<img src="{}" width="100" height="100" />', obj.qr_code_url())
-        return "(No QR code)"
+        return "(Brak kodu QR)"
 
-    qr_code_preview.short_description = "QR Code Preview"
+    qr_code_preview.short_description = "Podgląd kodu QR"

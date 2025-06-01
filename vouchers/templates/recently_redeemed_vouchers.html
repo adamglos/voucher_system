@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 
-{% block title %}Recently Redeemed Vouchers{% endblock %}
+{% block title %}Ostatnio Zrealizowane Vouchery{% endblock %}
 
 {% block content %}
-<h1>Recently Redeemed Vouchers</h1>
+<h1>Ostatnio Zrealizowane Vouchery</h1>
 
 <ul class="voucher-list">
     {% for voucher in redeemed_vouchers %}
         <li class="voucher-item">
             <div class="voucher-details">
-                <span><strong>Code:</strong> {{ voucher.code }}</span>
-                <span><strong>Amount:</strong> {{ voucher.amount }} PLN</span>
+                <span><strong>Kod:</strong> {{ voucher.code }}</span>
+                <span><strong>Kwota:</strong> {{ voucher.amount }} PLN</span>
             </div>
             <div class="date">{{ voucher.redeemed_at|date:"Y-m-d H:i" }}</div>
         </li>
     {% empty %}
-        <li>No recently redeemed vouchers found.</li>
+        <li>Nie znaleziono ostatnio zrealizowanych voucherów.</li>
     {% endfor %}
 </ul>
 {% endblock %}

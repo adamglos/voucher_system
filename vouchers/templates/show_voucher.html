@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}Show Voucher{% endblock %}
+{% block title %}Wyszukaj Voucher{% endblock %}
 
 {% block content %}
-<h1>Show Voucher</h1>
+<h1>Wyszukaj Voucher</h1>
 
 {% if message %}
     <p class="error-message">{{ message }}</p>
@@ -14,6 +14,9 @@
 <form method="post" id="show-form">
     {% csrf_token %}
     {{ form.as_p }}
+    <div class="button-group">
+        <button type="submit" class="button">Wyszukaj</button>
+    </div>
 </form>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
@@ -54,7 +57,7 @@
                 if (xhr.status === 200) {
                     window.location.href = xhr.responseURL;  // przekieruj po sukcesie
                 } else {
-                    console.error("Redeem failed:", xhr.responseText);
+                    console.error("Realizacja nieudana:", xhr.responseText);
                 }
             };
             xhr.send(formData);
@@ -62,7 +65,7 @@
     }
 
     function onScanFailure(error) {
-        console.warn(`QR error = ${error}`);
+        console.warn(`Błąd skanowania kodu QR = ${error}`);
     }
 
     Html5Qrcode.getCameras().then(devices => {
@@ -80,10 +83,10 @@
                 onScanFailure
             );
         } else {
-            console.error("No back camera found.");
+            console.error("Nie znaleziono tylnej kamery.");
         }
     }).catch(err => {
-        console.error("Error fetching cameras: ", err);
+        console.error("Błąd podczas dostępu do kamery: ", err);
     });
 </script>
 {% endblock %}

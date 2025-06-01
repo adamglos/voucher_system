@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     {% load static %}
     <meta charset="UTF-8">
-    <title>{% block title %}My Application{% endblock %}</title>
+    <title>{% block title %}Aplikacja Voucherowa{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Link do pliku CSS -->
 </head>
 <body>
     <nav>
-        <a href="{% url 'home' %}">Home</a>
-        
+        <a href="{% url 'home' %}">Strona główna</a>
+
         {% if user.is_authenticated %}
             <form method="post" action="{% url 'logout' %}" style="display: inline;">
                 {% csrf_token %}
-                <a href="#" onclick="this.closest('form').submit();" class="link">Logout</a>
+                <a href="#" onclick="this.closest('form').submit();" class="link">Wyloguj</a>
             </form>
         {% else %}
-            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'login' %}">Zaloguj</a>
         {% endif %}
     </nav>
 

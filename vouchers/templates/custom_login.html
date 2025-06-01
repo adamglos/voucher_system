@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Logowanie{% endblock %}
 
 {% block content %}
-<h1>Login</h1>
+<h1>Logowanie</h1>
 
-<form method="post">
+<form method="post" class="login-form">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="button">Login</button>
+    <div class="button-group">
+        <button type="submit" class="button">Zaloguj</button>
+    </div>
 </form>
 
 <div style="margin-top: 20px;">
-    <p>Don't have an account? Contact the administrator to create one.</p>
+    <p>Nie masz konta? Skontaktuj się z administratorem, aby je utworzyć.</p>
 </div>
 {% endblock %}

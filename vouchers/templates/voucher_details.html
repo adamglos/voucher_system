@@ -1,25 +1,43 @@
 {% extends 'base.html' %}
 
-{% block title %}Szczegóły Vouchera{% endblock %}
+{% block title %}Szczegóły vouchera{% endblock %}
 
 {% block content %}
-<h1>Szczegóły Vouchera</h1>
+<h1>Szczegóły vouchera</h1>
 
-<ul class="voucher-details">
-    <li><strong>Kod Vouchera:</strong> {{ voucher.code }}</li>
-    <li><strong>Kwota:</strong> {{ voucher.amount }} PLN</li>
-    {% if voucher.product %}
-        <li><strong>Produkt:</strong> {{ voucher.product }}</li>
-            {% if voucher.redeemed_by %}
-            <p>Zrealizowany przez: {{ voucher.redeemed_by.username }}</p>
+<div class="voucher-details-container">
+    <div class="voucher-info">
+        <ul class="voucher-details">
+            <li><strong>Kod vouchera:</strong> {{ voucher.code }}</li>
+            <li><strong>Kwota:</strong> {{ voucher.amount }} PLN</li>
+            <li><strong>Opis:</strong> {{ voucher.description }}</li>
+            <li><strong>Utworzono:</strong> {{ voucher.created_at|date:"d.m.Y H:i" }}</li>
+            {% if voucher.created_by %}
+                <li><strong>Utworzony przez:</strong> {{ voucher.created_by.username }}</li>
             {% endif %}
-    {% endif %}
-    <li><strong>Utworzono:</strong> {{ voucher.created_at|date:"Y-m-d H:i" }}</li>
-</ul>
+            {% if voucher.redeemed_by %}
+                <li><strong>Zrealizowany przez:</strong> {{ voucher.redeemed_by.username }}</li>
+                <li><strong>Data realizacji:</strong> {{ voucher.redeemed_at|date:"d.m.Y H:i" }}</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class="qr-code-container">
+        <h2>Kod QR</h2>
+        <img src="{{ voucher.qr_code_url }}" alt="QR kod dla vouchera {{ voucher.code }}" class="qr-code-image">
+    </div>
+</div>
 
 <!-- Przyciski akcji -->
 <div class="button-group">
-    <a href="{% url 'show_voucher' %}" class="button">Powrót do wyszukiwania</a>
-    <a href="{% url 'redeem_voucher' code=voucher.code %}" class="button" style="background-color: #E74C3C; color: white;">Zrealizuj voucher</a>
+    {% if from_list %}
+        <a href="{% url 'voucher_list' %}" class="button">Powrót do listy voucherów</a>
+    {% else %}
+        <a href="{% url 'show_voucher' %}" class="button">Powrót do wyszukiwania</a>
+    {% endif %}
+
+    {% if not voucher.is_redeemed %}
+        <a href="{% url 'redeem_voucher' code=voucher.code %}" class="button" style="background-color: #E74C3C; color: white;">Zrealizuj voucher</a>
+    {% endif %}
 </div>
 {% endblock %}

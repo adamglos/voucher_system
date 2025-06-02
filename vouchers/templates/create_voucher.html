@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Utwórz Voucher{% endblock %}
+{% block title %}Utwórz voucher{% endblock %}
 
 {% block content %}
-    <h1>Utwórz Voucher</h1>
+    <h1>Utwórz voucher</h1>
 
     {% if error_message %}
         <p class="error-message">{{ error_message }}</p>
@@ -13,7 +13,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <div class="button-group">
-            <button type="submit" class="button">Generuj Vouchery</button>
+            <button type="submit" class="button">Generuj vouchery</button>
         </div>
     </form>
 {% endblock %}

@@ -209,3 +209,192 @@ select:focus {
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
+
+/* Szczegóły vouchera z kodem QR */
+.voucher-details-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.voucher-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.qr-code-container {
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.qr-code-container h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 18px;
+}
+
+.qr-code-image {
+    max-width: 200px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Tabela voucherów */
+.voucher-table-container {
+    overflow-x: auto;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.voucher-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 14px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.voucher-table thead th {
+    background-color: #F5CD00;
+    color: #333;
+    font-weight: bold;
+    padding: 15px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+    white-space: nowrap;
+}
+
+.voucher-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.voucher-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.voucher-table tbody tr.redeemed {
+    background-color: #f9f9f9;
+    color: #777;
+}
+
+.voucher-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.voucher-table td {
+    padding: 12px 15px;
+    vertical-align: middle;
+}
+
+/* Kolumny tabeli */
+.code-column {
+    width: 15%;
+}
+
+.amount-column {
+    width: 15%;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.description-column {
+    width: 30%;
+}
+
+.date-column {
+    width: 15%;
+    white-space: nowrap;
+}
+
+.status-column {
+    width: 12%;
+    text-align: center;
+}
+
+.actions-column {
+    width: 13%;
+    text-align: center;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-badge.active {
+    background-color: #2ECC71;
+    color: white;
+}
+
+.status-badge.redeemed {
+    background-color: #95A5A6;
+    color: white;
+}
+
+.button-small {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #F5CD00;
+    color: #333;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.button-small:hover {
+    background-color: #E6C000;
+    text-decoration: none;
+}
+
+/* Paginacja */
+.pagination {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.pagination .step-links {
+    display: inline-block;
+    padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.pagination-link {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 3px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.pagination-link:hover {
+    background-color: #F5CD00;
+    text-decoration: none;
+}
+
+.current-page {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 10px;
+    font-weight: bold;
+}

@@ -3,24 +3,19 @@ from .models import Voucher
 from django.contrib.auth.forms import AuthenticationForm
 
 class VoucherForm(forms.ModelForm):
-    quantity = forms.IntegerField(
-        label="Ilość",
-        min_value=1,
-        max_value=10,
-        initial=1,
-        help_text="Wprowadź liczbę voucherów do wygenerowania (maks. 10)"
-    )
-
     class Meta:
         model = Voucher
-        fields = ['amount', 'product']  # Dodaj tutaj inne wymagane pola vouchera
+        fields = ['amount', 'description']
         labels = {
             'amount': 'Kwota',
-            'product': 'Produkt',
+            'description': 'Krótki opis (max 50 znaków)'
+        }
+        widgets = {
+            'description': forms.TextInput(attrs={'maxlength': 50}),
         }
 
 class RedeemVoucherForm(forms.Form):
-    code = forms.CharField(max_length=12, label="Kod Vouchera")
+    code = forms.CharField(max_length=12, label="Kod vouchera")
 
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.CharField(label="Nazwa użytkownika")

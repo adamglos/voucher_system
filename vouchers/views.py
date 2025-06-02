@@ -9,6 +9,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomAuthenticationForm
+from django.core.paginator import Paginator
 
 def is_manager(user):
     return user.groups.filter(name='Managers').exists()
@@ -28,17 +29,21 @@ def create_voucher(request):
     if request.method == 'POST':
         form = VoucherForm(request.POST)
         if form.is_valid():
-            quantity = form.cleaned_data['quantity']
             amount = form.cleaned_data['amount']
-            product = form.cleaned_data['product']
+            description = form.cleaned_data['description']
 
-            # Generowanie wielu voucherów
-            for _ in range(quantity):
-                voucher = Voucher(amount=amount, product=product, code=generate_voucher_code())
-                voucher.save()
-                voucher.generate_qr_code()
+            # Generowanie pojedynczego vouchera
+            voucher = Voucher(
+                amount=amount, 
+                description=description,
+                code=generate_voucher_code(),
+                created_by=request.user
+            )
+            voucher.save()
+            voucher.generate_qr_code()
 
-            return redirect('voucher_created')  # Przekierowanie do potwierdzenia po utworzeniu
+            # Przekierowanie do podsumowania z wygenerowanym voucherem
+            return redirect('voucher_created', code=voucher.code)
     else:
         form = VoucherForm()
 
@@ -68,8 +73,10 @@ def show_voucher(request):
 
 @login_required
 @user_passes_test(is_manager)
-def voucher_created(request):
-    return render(request, 'voucher_created.html')
+def voucher_created(request, code):
+    # Pobieramy utworzony voucher na podstawie kodu
+    voucher = get_object_or_404(Voucher, code=code)
+    return render(request, 'voucher_created.html', {'voucher': voucher})
 
 @login_required
 def recently_redeemed_vouchers(request):
@@ -99,6 +106,7 @@ def recently_redeemed_vouchers(request):
 
 @login_required
 def home(request):
+    # Strona główna aplikacji - sprawdzamy uprawnienia użytkownika, aby wyświetlić odpowiednie przyciski
     is_manager_user = is_manager(request.user)
     is_shop_user = is_shop(request.user)
 
@@ -110,9 +118,25 @@ def home(request):
 
 @login_required
 def voucher_details(request, code):
-    # Pobieramy voucher na podstawie kodu, bez jego realizacji
-    voucher = get_object_or_404(Voucher, code=code, is_redeemed=False)
-    return render(request, 'voucher_details.html', {'voucher': voucher})
+    # Sprawdzamy, do jakiej grupy należy użytkownik
+    is_manager_user = is_manager(request.user)
+
+    # Pobieramy voucher na podstawie kodu
+    if is_manager_user:
+        # Managerowie mogą zobaczyć dowolny voucher (również zrealizowany)
+        voucher = get_object_or_404(Voucher, code=code)
+    else:
+        # Pozostali użytkownicy mogą zobaczyć tylko niezrealizowane vouchery
+        voucher = get_object_or_404(Voucher, code=code, is_redeemed=False)
+
+    # Przekazanie kontekstu do szablonu
+    context = {
+        'voucher': voucher,
+        'is_manager': is_manager_user,
+        'from_list': request.GET.get('from_list') == 'true'
+    }
+
+    return render(request, 'voucher_details.html', context)
 
 @login_required
 def redeem_voucher(request, code):
@@ -125,7 +149,13 @@ def redeem_voucher(request, code):
     voucher.redeemed_by = request.user
     voucher.save()
 
-    return render(request, 'voucher_redeemed.html', {'voucher': voucher})
+    # Sprawdzamy czy użytkownik jest managerem, aby móc wyświetlić odpowiednie przyciski w szablonie
+    is_manager_user = is_manager(request.user)
+
+    return render(request, 'voucher_redeemed.html', {
+        'voucher': voucher,
+        'is_manager': is_manager_user
+    })
 
 def custom_login(request):
     if request.method == 'POST':
@@ -138,3 +168,28 @@ def custom_login(request):
         form = CustomAuthenticationForm()
 
     return render(request, 'custom_login.html', {'form': form})
+
+@login_required
+@user_passes_test(is_manager)
+def voucher_list(request):
+    # Pobierz wszystkie vouchery, sortowane od najnowszych
+    vouchers = Voucher.objects.all().order_by('-created_at')
+
+    # Kod do regeneracji kodów QR - zakomentowany, był potrzebny tylko przy pierwszym uruchomieniu
+    # print("Regeneracja kodów QR rozpoczęta...")
+    # for voucher in vouchers:
+    #     print(f"Regeneruję kod QR dla vouchera: {voucher.code}")
+    #     voucher.generate_qr_code()
+    # print("Regeneracja kodów QR zakończona.")
+
+    # Paginacja - wyświetlamy maksymalnie 10 voucherów na jednej stronie
+    paginator = Paginator(vouchers, 10)
+
+    # Pobierz numer strony z parametru GET
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'voucher_list.html', {
+        'page_obj': page_obj,
+        'is_manager': True
+    })

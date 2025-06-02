@@ -1,23 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %}Zarządzanie Voucherami{% endblock %}
+{% block title %}Zarządzanie voucherami{% endblock %}
 
 {% block content %}
-<h1>Zarządzanie Voucherami</h1>
+<h1>Zarządzanie voucherami</h1>
 
 {% if user.is_authenticated %}
     <div class="home-buttons">
-        {% if is_manager %}
-            <a href="{% url 'create_voucher' %}" class="button">Utwórz Voucher</a>
-        {% endif %}
-        <a href="{% url 'show_voucher' %}" class="button">Wyszukaj Voucher</a>
+        <a href="{% url 'show_voucher' %}" class="button">Wyszukaj voucher</a>
         <a href="{% url 'recently_redeemed_vouchers' %}" class="button">
             {% if is_shop %}
-                Moje Zrealizowane Vouchery
+                Moje zrealizowane vouchery
             {% else %}
-                Ostatnio Zrealizowane
+                Ostatnio zrealizowane
             {% endif %}
         </a>
+        {% if is_manager %}
+            <a href="{% url 'create_voucher' %}" class="button">Utwórz voucher</a>
+            <a href="{% url 'voucher_list' %}" class="button">Lista voucherów</a>
+        {% endif %}
     </div>
 {% else %}
     <p>Zaloguj się, aby uzyskać dostęp do funkcji zarządzania voucherami.</p>

@@ -4,5 +4,30 @@
 
 {% block content %}
 <h1>Voucher Utworzony</h1>
-<p>Twój voucher został pomyślnie utworzony!</p>
+<div class="voucher-summary">
+    <p>Twój voucher został pomyślnie utworzony!</p>
+
+    <div class="voucher-details">
+        <h2>Szczegóły vouchera:</h2>
+        <ul>
+            <li><strong>Kod:</strong> {{ voucher.code }}</li>
+            <li><strong>Kwota:</strong> {{ voucher.amount }} PLN</li>
+            <li><strong>Opis:</strong> {{ voucher.description }}</li>
+            <li><strong>Data utworzenia:</strong> {{ voucher.created_at|date:"d.m.Y H:i" }}</li>
+            {% if voucher.created_by %}
+                <li><strong>Utworzony przez:</strong> {{ voucher.created_by.username }}</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class="qr-code">
+        <h2>Kod QR:</h2>
+        <img src="{{ voucher.qr_code_url }}" alt="QR Code dla vouchera {{ voucher.code }}" style="max-width: 200px; height: auto;">
+    </div>
+
+    <div class="button-group">
+        <a href="{% url 'home' %}" class="button">Powrót do strony głównej</a>
+        <a href="{% url 'create_voucher' %}" class="button">Utwórz kolejny voucher</a>
+    </div>
+</div>
 {% endblock %}

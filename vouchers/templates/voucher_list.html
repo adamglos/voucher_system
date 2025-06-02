@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista voucherów{% endblock %}
+
+{% block content %}
+<h1>Lista voucherów</h1>
+
+{% if page_obj.object_list %}
+    <div class="voucher-table-container">
+        <table class="voucher-table">
+            <thead>
+                <tr>
+                    <th class="code-column">Kod</th>
+                    <th class="amount-column">Kwota</th>
+                    <th class="description-column">Opis</th>
+                    <th class="date-column">Data utworzenia</th>
+                    <th class="status-column">Status</th>
+                    <th class="actions-column">Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for voucher in page_obj.object_list %}
+                <tr class="{% if voucher.is_redeemed %}redeemed{% endif %}">
+                    <td class="code-column"><strong>{{ voucher.code }}</strong></td>
+                    <td class="amount-column">{{ voucher.amount }} PLN</td>
+                    <td class="description-column">{{ voucher.description }}</td>
+                    <td class="date-column">{{ voucher.created_at|date:"d.m.Y H:i" }}</td>
+                    <td class="status-column">
+                        {% if voucher.is_redeemed %}
+                            <span class="status-badge redeemed">Zrealizowany</span>
+                        {% else %}
+                            <span class="status-badge active">Aktywny</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions-column">
+                        <a href="{% url 'voucher_details' code=voucher.code %}?from_list=true" class="button-small">Szczegóły</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginacja -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1" class="pagination-link">&laquo; pierwsza</a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">poprzednia</a>
+            {% endif %}
+
+            <span class="current-page">
+                Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="pagination-link">następna</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-link">ostatnia &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% else %}
+    <p class="info-message">Brak voucherów do wyświetlenia.</p>
+{% endif %}
+
+<div class="button-group">
+    <a href="{% url 'home' %}" class="button">Powrót do strony głównej</a>
+    <a href="{% url 'create_voucher' %}" class="button">Utwórz nowy voucher</a>
+</div>
+{% endblock %}

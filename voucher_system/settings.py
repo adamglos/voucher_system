@@ -24,13 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1eukh2pqn(bjl0_a5$ia1gq9c1jtxxw4$se()0qyue5^-bv&3g'
 
 # SECURITY WARNING: don't run with debug turned on in production! :)
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = [
-    'voucher.thefry.pl',
-    'localhost',
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
        'https://voucher.thefry.pl',

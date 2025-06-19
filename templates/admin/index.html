@@ -1,0 +1,11 @@
+{% extends "admin/index.html" %}
+{% load static %}
+{% block content %}
+    {% if user.is_superuser %}
+        <div style="margin-bottom: 20px;">
+            <a href="/admin/clear-log/" class="button admin-action-btn">Wyczyść listę ostatnich działań</a>
+            <a href="/admin/clear-vouchers/" class="button admin-action-btn" style="margin-left: 10px;">Usuń wszystkie vouchery</a>
+        </div>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

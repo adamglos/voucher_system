@@ -10,6 +10,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomAuthenticationForm
 from django.core.paginator import Paginator
+from django.contrib.admin.models import LogEntry, ADDITION
+from django.contrib.contenttypes.models import ContentType
 
 def is_manager(user):
     return user.groups.filter(name='Managers').exists()
@@ -41,6 +43,16 @@ def create_voucher(request):
             )
             voucher.save()
             voucher.generate_qr_code()
+
+            # Dodanie wpisu do logów admina
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=ContentType.objects.get_for_model(Voucher).pk,
+                object_id=voucher.pk,
+                object_repr=str(voucher),
+                action_flag=ADDITION,
+                change_message="Dodano voucher przez /create"
+            )
 
             # Przekierowanie do podsumowania z wygenerowanym voucherem
             return redirect('voucher_created', code=voucher.code)

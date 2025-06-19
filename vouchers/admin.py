@@ -4,6 +4,9 @@ from django.utils.html import format_html
 from .models import Voucher
 from django.conf import settings
 import os
+from .admin_clear_log import *
+from .admin_clear_vouchers import *
+from django.contrib.admin.models import LogEntry
 
 @admin.register(Voucher)
 class VoucherAdmin(admin.ModelAdmin):
@@ -42,3 +45,13 @@ class VoucherAdmin(admin.ModelAdmin):
             if os.path.exists(qr_path):
                 os.remove(qr_path)
         super().delete_queryset(request, queryset)
+
+# Poprawka: bez rekursji dla each_context
+if not hasattr(admin.site, '_original_each_context'):
+    admin.site._original_each_context = admin.site.each_context
+    def each_context_with_log(request):
+        context = admin.site._original_each_context(request)
+        if request.user.is_superuser:
+            context['all_log_entries'] = LogEntry.objects.select_related('user').order_by('-action_time')[:20]
+        return context
+    admin.site.each_context = each_context_with_log

@@ -95,4 +95,4 @@ class Voucher(models.Model):
         self.save()
 
     def __str__(self):
-        return f'Voucher {self.code}'
+        return self.code

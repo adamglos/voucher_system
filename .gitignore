@@ -10,5 +10,5 @@ db.sqlite3
 .env
 .idea
 
-static/
-media/qr_codes
+/static/
+/media/qr_codes

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Nie znaleziono vouchera{% endblock %}
+{% block content %}
+<div class="voucher-error">
+    <h1>Nie znaleziono vouchera</h1>
+    <p>{{ message }}</p>
+    <form action="/" method="get">
+        <button type="submit" class="button">Powrót</button>
+    </form>
+</div>
+{% endblock %}

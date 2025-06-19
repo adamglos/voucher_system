@@ -64,10 +64,8 @@ def show_voucher(request):
                 # Przekierowanie do widoku szczegółów vouchera
                 return redirect('voucher_details', code=code)
             except Voucher.DoesNotExist:
-                # Przekierowanie do nowej strony z informacją o błędzie
-                return render(request, 'voucher_not_found.html', {
-                    'message': 'Voucher o podanym kodzie nie istnieje lub został już wykorzystany.'
-                })
+                # Przekierowanie 302 na stronę z informacją o błędzie
+                return redirect('voucher_not_found')
     else:
         form = RedeemVoucherForm()
 
@@ -194,4 +192,9 @@ def voucher_list(request):
     return render(request, 'voucher_list.html', {
         'page_obj': page_obj,
         'is_manager': True
+    })
+
+def voucher_not_found(request):
+    return render(request, 'voucher_not_found.html', {
+        'message': 'Voucher o podanym kodzie nie istnieje lub został już wykorzystany.'
     })

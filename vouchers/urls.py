@@ -12,4 +12,5 @@ urlpatterns = [
     path('redeem/<str:code>/', views.redeem_voucher, name='redeem_voucher'),
     path('login/', views.custom_login, name='login'),
     path('all-vouchers/', views.voucher_list, name='voucher_list'),
+    path('not-found/', views.voucher_not_found, name='voucher_not_found'),
 ]
